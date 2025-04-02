@@ -100,6 +100,7 @@
 ! 26.01.2025    ggu     fix mpi bug for ibfm /= 0 (only master writes)
 ! 08.03.2025    ggu     extracted mod_restart in its own file
 ! 09.03.2025    ggu     call shympi_barrier after finishing restart file
+! 02.04.2025    cll     changes for bfm bgc interface
 !
 ! notes :
 !
@@ -559,6 +560,7 @@
 	use levels, only : nlvdi,nlv,hlv,ilhv,ilhkv
 	use basin
 	use shympi
+        use bfm_restart
 
         implicit none
 
@@ -667,6 +669,7 @@
 
 	use mod_restart
 	use shympi
+        use bfm_restart
 
 	implicit none
 
@@ -881,6 +884,8 @@
 	use basin
 	use mod_restart
 	use shympi
+	use bfm_restart
+        use shyfem_bgc_interface, only : bfm_init_for_restart
 
         implicit none
 

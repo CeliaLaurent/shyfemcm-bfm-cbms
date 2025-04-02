@@ -190,6 +190,7 @@
 ! 08.03.2025    ggu	write compiler information
 ! 09.03.2025    ggu	write compiler profile
 ! 10.03.2025    ggu	write local commit
+! 02.04.2025    cll     changes for bfm bgc interface
 !
 !*****************************************************************
 !
@@ -236,7 +237,7 @@
 	use projection
 	use coordinates
 	use mod_subset
-	use mod_bfm
+	use shyfem_bgc_interface, only : shyfem_bgc_interface_init
         use mod_nohyd !DWNH
 !$	use omp_lib	!ERIC
 	use shympi
@@ -478,7 +479,7 @@
         call shdist(rdistv)
 	call quad_tree_initialize
 	call tracer_init
-	call bfm_init
+	call shyfem_bgc_interface_init
 	call tvd_init
         call qhdist(qdistv) !DWNH
 	call renewal_time
@@ -976,7 +977,7 @@
 	
 !$	use omp_lib	!ERIC
 	
-	use mod_bfm
+	use shyfem_bgc_interface, only : shyfem_bgc_interface_run,ibfm
 
 	implicit none
 	
@@ -1015,7 +1016,7 @@
 !$OMP END TASK
 
 !$OMP TASK IF ( ibfm > 0 )
-	call bfm_run
+	call shyfem_bgc_interface_run
 !$OMP END TASK
 
 !!!$OMP END TASKGROUP	

@@ -43,6 +43,7 @@ EXES	=
 
 OBJ = bfm_dummy.o
 ifeq ($(ECOLOGICAL),BFM)
+  LIBBFM = bfm
   OBJ	     =	bfm_statevars.o bfm.o bfm_internal.o 
   LIBG_BFM     = -L$(BFMDIR)/lib/ -l$(LIBBFM)
   INCL_BFM     = -I$(BFMDIR)/include

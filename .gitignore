@@ -52,7 +52,7 @@ DIFFS
 errout.dat
 
 #-----------------------------------------------
-
+src/contrib/ecological/bfm/
 src/shyfem/shyfem
 bin/shyfem
 
