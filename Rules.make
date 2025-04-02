@@ -34,8 +34,8 @@
 #
 ##############################################
 
-COMPILER_PROFILE = NORMAL
-#COMPILER_PROFILE = CHECK
+#COMPILER_PROFILE = NORMAL
+COMPILER_PROFILE = CHECK
 #COMPILER_PROFILE = SPEED
 
 ##############################################
@@ -64,14 +64,14 @@ COMPILER_PROFILE = NORMAL
 ##############################################
 
 #FORTRAN_COMPILER = GNU_G77
-FORTRAN_COMPILER = GNU_GFORTRAN
-#FORTRAN_COMPILER = INTEL
+#FORTRAN_COMPILER = GNU_GFORTRAN
+FORTRAN_COMPILER = INTEL
 #FORTRAN_COMPILER = PORTLAND
 #FORTRAN_COMPILER = IBM
 #FORTRAN_COMPILER = PGI
 
-C_COMPILER = GNU_GCC
-#C_COMPILER = INTEL
+#C_COMPILER = GNU_GCC
+C_COMPILER = INTEL
 #C_COMPILER = IBM
 #C_COMPILER = PGI
 
@@ -263,8 +263,8 @@ GPU=NONE
 #
 ##############################################
 
-NETCDF = false
-#NETCDF = true
+#NETCDF = false
+NETCDF = true
 #NETCDFDIR =
 NETCDFDIR = ${NETCDF_C_HOME}
 NETCDFFDIR =${NETCDF_FORTRAN_HOME}
@@ -302,10 +302,10 @@ GOTM = true
 #
 ##############################################
 
-ECOLOGICAL = NONE
+#ECOLOGICAL = NONE
 #ECOLOGICAL = EUTRO
 #ECOLOGICAL = AQUABC
-#ECOLOGICAL = BFM
+ECOLOGICAL = BFM
 
 MERCURY = false
 #MERCURY = true
@@ -1011,8 +1011,8 @@ FINTEL_NOOPT = -g -traceback
 FINTEL_NOOPT = 
 ifeq ($(DEBUG),true)
   FINTEL_TRAP = -fp-trap-all=common
-  FINTEL_TRAP = -ftrapuv -debug all -fpe0
   FINTEL_TRAP = -debug all # WW3_ARON
+  FINTEL_TRAP = -ftrapuv -debug all -fpe0
   FINTEL_NOOPT = -xP
   FINTEL_NOOPT = -CU -d1
   FINTEL_NOOPT = -CU -d5
