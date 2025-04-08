@@ -61,10 +61,10 @@ $::reduce = "" unless $::reduce;
 #-------------------------------------------------------------
 @::bound_names = qw/ boundn conzn tempn saltn vel3dn
 		bio2dn sed2dn tox3dn
-		bfm1bc bfm2bc bfm3bc /;
+		bfm1bc bfm2bc bfm3bc bfmbcn /;
 @::name_names = qw/ bound wind rain qflux ice restrt gotmpa
 		bio bios toxi
-		conzin saltin tempin zinit /;
+		conzin saltin tempin zinit bfmini bgcbm1 /;
 @::aquabc_names = qw/ biocon bioscon biolight bioaow 
 		bioaos bioph biotemp bioload /;
 @::lagrg_names = qw/ lagra lagrf lagrt /;
@@ -713,6 +713,7 @@ sub collect_str {
 
   print STDERR "copying/condensing the following files:\n";
 
+  system("cp *.nml $dir");
   foreach my $item (@$items) {
     my $file = $item->{"value"};
     my $filename = $file;

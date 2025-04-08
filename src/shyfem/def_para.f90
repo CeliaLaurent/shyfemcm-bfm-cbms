@@ -2071,6 +2071,16 @@
 !		with the parameter |idtoff| greater than 0.
 
         call addfnm('bfmini',' ')
+        call addfnm('cbms',' ')
+        call addfnm('bgcbm1',' ')
+        call addfnm('bgcbm2',' ')
+        call addfnm('bgcbm3',' ')
+        call addfnm('bgcbm4',' ')
+        call addfnm('bgcbm5',' ')
+        call addfnm('bgcbm6',' ')
+        call addfnm('bgcbm7',' ')
+        call addfnm('bgcbm8',' ')
+        call addfnm('bgcbm9',' ')
 	call addfnm('offlin',' ')
 
 ! DOCS	END
