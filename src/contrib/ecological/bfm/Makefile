@@ -101,8 +101,12 @@ bfmdiff:
 	  diff arc $$file ; \
 	done
 
-bfmdelete:
+bfmzip:
+	zip bfm.zip $(BFMPRIVATE)
+
+bfmclean: 
 	-rm -f $(BFMPRIVATE)
+	-rm -f bfm.zip
 
 #--------------------------------------------- clean
 
