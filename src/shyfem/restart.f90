@@ -560,7 +560,9 @@
 	use levels, only : nlvdi,nlv,hlv,ilhv,ilhkv
 	use basin
 	use shympi
-        use bfm_restart
+        use bgc_bfm_restart
+        use bgc_ben_restart
+        use bgc_veg_restart
 
         implicit none
 
@@ -652,6 +654,8 @@
 	call restart_write_value(iunit,ibfm)
 	if( ibfm .gt. 0 ) then
 	  call write_restart_bfm(iunit)
+	  call write_restart_ben(iunit)
+	  call write_restart_veg(iunit)
         end if
 
 	if( bmaster ) flush(iunit)
@@ -669,7 +673,9 @@
 
 	use mod_restart
 	use shympi
-        use bfm_restart
+        use bgc_bfm_restart
+        use bgc_ben_restart
+        use bgc_veg_restart
 
 	implicit none
 
@@ -847,6 +853,8 @@
           if( ibfm .gt. 0 ) then
 	    call rst_add_flag(id,iflag)
 	    call skip_restart_bfm(iunit)
+	    call skip_restart_ben(iunit)
+	    call skip_restart_veg(iunit)
           end if
         end if
 
@@ -884,7 +892,9 @@
 	use basin
 	use mod_restart
 	use shympi
-	use bfm_restart
+        use bgc_bfm_restart
+        use bgc_ben_restart
+        use bgc_veg_restart
         use shyfem_bgc_interface, only : bfm_init_for_restart
 
         implicit none
@@ -1062,6 +1072,8 @@
 	        call read_restart_bfm(iunit)
 	      else
 	        call skip_restart_bfm(iunit)
+	        call read_restart_ben(iunit)
+	        call read_restart_veg(iunit)
 	      end if
 	    end if
           end if

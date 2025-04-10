@@ -73,7 +73,6 @@
 ! 04.12.2024    ggu     new framework for not doing gather_all
 ! 07.12.2024    ggu     reduce only to root (not all)
 ! 01.04.2025    ggu     write subrange of variables
-! 02.04.2025    cll     changes for bfm bgc interface
 !
 ! contents :
 !
@@ -991,14 +990,14 @@
           stop 'error stop shy_write_output_record: nlvdi>1 & m>1'
 	end if
 
-	!if( nlvdi > lmax .and. lmax > 1 ) then
-	!  write(6,*) 'error in vertical structure: ',nlvdi,lmax
-	!  stop 'error stop shy_write_output_record: nlvdi>lmax'
-	!else if( lmax > 1 .and. nlvdi > lmax ) then		!$BUGNLV
-	!  call shy_info(id)
-	!  write(6,*) 'lmax = ',lmax,'  nlvdi = ',nlvdi
-	!  stop 'error stop shy_write_output_record: nlvdi>lmax>1'
-	!end if
+	if( nlvdi > lmax .and. lmax > 1 ) then
+	  write(6,*) 'error in vertical structure: ',nlvdi,lmax
+	  stop 'error stop shy_write_output_record: nlvdi>lmax'
+	else if( lmax > 1 .and. nlvdi > lmax ) then		!$BUGNLV
+	  call shy_info(id)
+	  write(6,*) 'lmax = ',lmax,'  nlvdi = ',nlvdi
+	  stop 'error stop shy_write_output_record: nlvdi>lmax>1'
+	end if
 
 	if(bdebug) write(6,*) 'shy_write_output_record: ' &
      &				,my_id,nn,ng,belem
