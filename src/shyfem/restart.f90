@@ -1070,10 +1070,12 @@
 	      if( rst_want_restart(id) ) then
                 call bfm_init_for_restart()
 	        call read_restart_bfm(iunit)
-	      else
-	        call skip_restart_bfm(iunit)
 	        call read_restart_ben(iunit)
 	        call read_restart_veg(iunit)
+	      else
+	        call skip_restart_bfm(iunit)
+	        call skip_restart_ben(iunit)
+	        call skip_restart_veg(iunit)
 	      end if
 	    end if
           end if
