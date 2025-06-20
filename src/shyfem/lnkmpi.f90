@@ -102,17 +102,17 @@
 ! adjust kantv
 !-------------------------------------------------------------
 
-	do k=1,nkn
-	  if( iboundv(k) == 0 ) then
-	    kantv(:,k) = 0
-	  else if( .not. shympi_is_inner_node(k) ) then		!in other domain
-	    do i=1,2
-	      kk = kantv(i,k)
-	      id = id_node(kk)
-	      if( id /= my_id ) kantv(i,k) = 0
-	    end do
-	  end if
-	end do
+!	do k=1,nkn
+!	  if( iboundv(k) == 0 ) then
+!	    kantv(:,k) = 0
+!	  else if( .not. shympi_is_inner_node(k) ) then		!in other domain
+!	    do i=1,2
+!	      kk = kantv(i,k)
+!	      id = id_node(kk)
+!	      if( id /= my_id ) kantv(i,k) = 0
+!	    end do
+!	  end if
+!	end do
 
 !-------------------------------------------------------------
 ! adjust ieltv (-1 is reserved for OB)

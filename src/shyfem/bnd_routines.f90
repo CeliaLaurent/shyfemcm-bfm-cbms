@@ -1091,7 +1091,7 @@
 	  call get_bnd_ipar(ibc,'levmax',levmax)
 
 	  if( ibtyp .lt. 2 .or. ibtyp .gt. 3 ) nk = 0		!skip
-
+      
 	  do i=1,nk
             k = kbnds(ibc,i)
 	    kindex = kbndind(ibc,i)
@@ -1108,6 +1108,7 @@
 	    if( lmax > nlv ) goto 98
 
 	    dvoltot = 0.
+		dvols = 0.
 	    do l=lmin,lmax
 	      dvol = volnode(l,k,mode)
 	      dvols(l) = dvol

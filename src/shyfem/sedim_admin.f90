@@ -248,7 +248,7 @@
 ! Initialization
 ! This section is called only the first time step when ICALL = 0
 ! ----------------------------------------------------------
-
+        sedpa = 0
         if( icall .le. -1 ) return
 
         isedi = nint(sedpa(1))

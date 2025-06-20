@@ -309,6 +309,10 @@ info:
 	@echo "METIS_HOME: $(METIS_HOME)"
 
 #------------------------------------------------------------------------
+ifeq ($(COMPILER_PROFILE),CHECK)
+shyfem.o: shyfem.f90
+	$(F77) -c $(FFLAG_SPECIAL) shyfem.f90
+endif
 
 %.o: %.F90
 	$(F77) $(XWW3FFLAGS) $(FFLAGS) -c $<

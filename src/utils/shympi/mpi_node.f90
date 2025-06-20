@@ -2656,6 +2656,11 @@
 	real, allocatable :: val_domain(:,:,:)
 
 	if( bmpi_skip ) then
+#ifdef SHYFEM_CHECK
+	  if(size(val_out,1).ne. size(vals,1))then
+		stop 'error shape mismatch in mpi_node'
+	  endif 
+#endif
 	  val_out = vals
 	  return
 	end if

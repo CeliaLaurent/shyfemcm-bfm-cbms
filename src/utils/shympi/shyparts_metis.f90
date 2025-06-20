@@ -43,36 +43,46 @@
 
 ! partitions grd file using the METIS library
 ! requires metis-5.1.0.tar.gz
-
 	use shympi
+       !use metis_interface, only: idx_t, real_t, &
+       ! METIS_SetDefaultOptions,&
+       ! METIS_PartMeshNodal, METIS_NOPTIONS, &
+       !METIS_OPTION_NUMBERING, METIS_OPTION_CONTIG, METIS_OK
+        use iso_c_binding, only:C_FLOAT,C_INT 
 
 	implicit none
 
 	integer nkn,nel
 	integer nen3v(3,nel)
-	integer nparts
-	integer npart(nkn)
-	integer epart(nel)
+	integer(C_INT) nparts
+	integer(C_INT) npart(nkn)
+	integer(C_INT) epart(nel)
 
 	integer		      :: ie,ii,l
-	integer, allocatable  :: eptr(:) 	!index for eind
-	integer, allocatable  :: eind(:) 	!nodelist in elements
-	integer, allocatable  :: vwgt(:) 	!weights of vertices
-        integer, allocatable  :: vsize(:)	!size of the nodes
-        real, allocatable     :: tpwgts(:)	!desired partition weight 
+	integer(C_INT), allocatable  :: eptr(:) 	!index for eind
+	integer(C_INT), allocatable  :: eind(:) 	!nodelist in elements
+	integer(C_INT), allocatable  :: vwgt(:) 	!weights of vertices
+        integer(C_INT), allocatable  :: vsize(:)	!size of the nodes
+        real(C_FLOAT), allocatable     :: tpwgts(:)	!desired partition weight 
 
-        integer               :: objval		!edge-cut or total comm vol
-	integer               :: options(40)	!metis options
+        integer(C_INT)               :: objval		!edge-cut or total comm vol
+	integer(C_INT)               :: options(0:39)	!metis options
 
 	logical bcontig
 	integer iu,nfill,i
 
+        integer(C_INT):: ne     ! number of elements
+        integer(C_INT):: nn     ! number of nodes
+    
+        integer(C_INT) ::  ios
+
 	bcontig = .false.	!want contigous areas?
 
+         ne = nel    ! number of elements
+         nn = nkn    ! number of nodes
 !-----------------------------------------------------------------
 ! initialiaze arrays
 !-----------------------------------------------------------------
-
 	npart = 0
 	epart = 0
 
@@ -111,18 +121,28 @@
         !options(1) = 1		!PTYPE (0=rb,1=kway)
         !options(2) = 1		!OBJTYPE (0=cut,1=vol)
         !options(12) = 1	!CONTIG (0=defoult,1=force contiguous)
-        options(18) = 1		!NUMBERING (0 C-style, 1 Fortran-style)
-
-	if( bcontig ) options(12) = 1
+        options(18-1) = 1		!NUMBERING (0 C-style, 1 Fortran-style)
+        !options(METIS_OPTION_NUMBERING) = 1    ! Fortran-style numbering
+        !if(bcontig) options(METIS_OPTION_CONTIG) = 1       ! Force contigous partitions
+	if( bcontig ) options(12-1) = 1
 
 !-----------------------------------------------------------------
 ! Call METIS for patitioning on nodes
 !-----------------------------------------------------------------
 
+        objval=-1
 	write(6,*) 'partitioning with METIS...'
-        call METIS_PartMeshNodal(nel, nkn, eptr, eind, vwgt, vsize,  &
+        !write(*,*)'METIS_PartMeshNodal(',nel, nkn, eptr
+        !writE(*,*)'eind', eind, 'vwgt',vwgt, 'vsize',vsize
+        !write(*,*)'nparts',nparts,'tpwgts',tpwgts
+        !write(*,*)'options', options,'objval', objval
+        !write(*,*)'epart',epart,'npart', npart
+        !ios=
+        call METIS_PartMeshNodal(nel, nkn, eptr, eind,vwgt, vsize, &
      &       nparts, tpwgts, options, objval, epart, npart)
-
+        !if (ios /= METIS_OK) then
+        !write(*,*) "METIS_PartMeshNodal failed with error: ", ios
+        !er
 !-----------------------------------------------------------------
 ! end of routine
 !-----------------------------------------------------------------
