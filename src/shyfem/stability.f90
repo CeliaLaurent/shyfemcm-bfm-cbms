@@ -115,7 +115,8 @@
 !==================================================================
 
 	subroutine scalar_compute_stability(robs,rtauv,wsink,wsinkv &
-     &					,rkpar,azpar,rindex,saux)
+     &					,rkpar,azpar,rindex,saux &
+     &                                  ,cwrite)
 
 ! computes stability index
 
@@ -134,6 +135,7 @@
         real azpar
         real rindex
         real saux(nlvdi,nkn)
+        real cwrite(nlvdi,nkn)
 
         real adpar,aapar
         real difmol
@@ -158,18 +160,18 @@
 !----------------------------------------------------------------
 ! call conzstab
 !----------------------------------------------------------------
-
+        saux=0.0
         call conzstab( &
      &          ddt,robs,rtauv,wsink,wsinkv,rkpar,difhv,difv &
      &		,difmol,azpar,adpar,aapar &
-     &          ,rindex,istot,isact,nlvdi,nlv)
+     &          ,rindex,istot,isact, &
+     &          saux,cwrite, &
+     &          nlvdi,nlv)
 
 !----------------------------------------------------------------
 ! propagate to all domains
 !----------------------------------------------------------------
-
 	rindex = shympi_max(rindex)
-
 !----------------------------------------------------------------
 ! end of routine
 !----------------------------------------------------------------
@@ -198,20 +200,22 @@
 	real, allocatable :: wsinkv(:,:)
 	real, allocatable :: rtauv(:,:)
 	real, allocatable :: saux(:,:)
+	real, allocatable :: cwrite(:,:)
 
 	allocate(wsinkv(0:nlvdi,nkn))
 	allocate(rtauv(nlvdi,nkn))
 	allocate(saux(nlvdi,nkn))
+	allocate(cwrite(nlvdi,nkn))
 
 	wsinkv = 0.
 	rtauv = 0.
 	saux = 0.
 	robs = 0.
 	wsink = 0.
-
+        cwrite   = 0.   
 	call getaz(azpar)
 	call scalar_compute_stability(robs,rtauv,wsink,wsinkv,rkpar,azpar, &
-     &					rindex,saux)
+     &					rindex,saux,cwrite)
 
 	end
 
@@ -224,7 +228,7 @@
 
 	use levels, only : nlvdi,nlv
 	use basin
-
+        use shympi, only : my_id
         implicit none
 
 	real dt
@@ -236,16 +240,19 @@
         real rindex
         integer istot
 	real saux(nlvdi,nkn)
+        real cwrite(nlvdi,nkn)
 
 	real azpar
 
 !----------------------------------------------------------------
 ! compute stability index
 !----------------------------------------------------------------
+        if(maxval(wsinkv)>1.0) write(*,*) ' err wsink in scalar_stability'
 
 	call getaz(azpar)
+        saux=0.0
 	call scalar_compute_stability(robs,rtauv,wsink,wsinkv,rkpar,azpar, &
-     &					rindex,saux)
+     &					rindex,saux,cwrite)
 
 !----------------------------------------------------------------
 ! scale to real time step dt
@@ -284,6 +291,7 @@
         integer istot
 	double precision dtime
 	real saux(nlvdi,nkn)
+        real cwrite(nlvdi,nkn)
 
 	integer ia,id
 	integer l,k
@@ -296,7 +304,7 @@
 
 	call getaz(azpar)
 	call scalar_compute_stability(robs,rtauv,wsink,wsinkv,rkpar,azpar, &
-     &					rindex,saux)
+     &					rindex,saux,cwrite)
 	rindex = dt * rindex
 	istot = 1 + rindex
 
@@ -323,6 +331,7 @@
 	id = 0
 	call get_act_dtime(dtime)
 	call shy_write_scalar(id,'sta',dtime,1,778,nlvdi,saux)
+	call shy_write_scalar(id,'sta',dtime,1,778,nlvdi,cwrite)
 !ggu protect
 
 !----------------------------------------------------------------
@@ -752,6 +761,7 @@
 	real rtauv(nlvdi,nkn)
 	real wsinkv(0:nlvdi,nkn)
 	real saux(nlvdi,nkn)
+        real cwrite(nlvdi,nkn)
 
 	azpar = 0.
 	rkpar = 0.
@@ -761,7 +771,7 @@
 
 	write(6,*) 'parallel test...'
 	call scalar_compute_stability(robs,rtauv,wsink,wsinkv,rkpar,azpar, &
-     &					rindex,saux)
+     &					rindex,saux,cwrite)
 	write(6,*) 'parallel is ok.'
 
 	end

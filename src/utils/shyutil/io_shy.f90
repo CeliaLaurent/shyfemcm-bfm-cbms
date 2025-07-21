@@ -215,6 +215,7 @@
 !	12	insert empty record after header
 !	13	new values simpar
 !	14	new nfix for fixed vertical values
+!	15	new numerotation of bfm and cbms variables
 
 !==================================================================
 	module shyfile
@@ -225,7 +226,7 @@
 	integer, parameter, private :: idshy = 1617
 
 	integer, parameter, private :: minvers = 11
-	integer, parameter, private :: maxvers = 14
+	integer, parameter, private :: maxvers = 15
 
 	integer, parameter, private ::  no_type = 0
 	integer, parameter, private :: ous_type = 1
@@ -1290,7 +1291,7 @@
 	if( ios /= 0 ) return
 	call shy_set_params(id,nkn,nel,npr,nlv,nvar)
 
-        if( nvers >= 14 ) then          !nfix
+        if( nvers >= 15 ) then          !nfix
         ierr = 33
         read(iunit,iostat=ios) nfix
         if( ios /= 0 ) return

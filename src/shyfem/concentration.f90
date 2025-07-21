@@ -459,7 +459,7 @@
 
 	use levels, only : nlvdi,nlv
 	use basin, only : nkn,nel,ngr,mbw
-
+        use shympi, only : my_id
 	implicit none
 
         character*(*) what
@@ -493,7 +493,6 @@
 	r3v = 0.
 	cobs = 0.
 	rtauv = 0.
-
 !--------------------------------------------------------------
 ! make identifier for variable
 !--------------------------------------------------------------
@@ -695,7 +694,8 @@
         if( istot .gt. istot_max ) then
 	    call scalar_info_stability(dt,robs,rtauv,wsinkl,wsinkv &
      &				,rkpar,sindex,istot,saux)
-            write(6,*) 'istot  = ',istot,'   sindex = ',sindex
+            write(6,*) 'error rank id',my_id,what,'istot  = ',istot, &
+                      '>',istot_max,'   sindex = ',sindex
             stop 'error stop scal3sh: istot index too high'
         end if
 
@@ -1577,7 +1577,8 @@
      &			,difmol,azpar &
      &			,adpar,aapar &
      &                  ,sindex &
-     &			,istot,isact &
+     &			,istot,isact,saux &
+     &                  ,cwrite &
      &			,nlvddi,nlev)
 
 ! checks stability
@@ -1646,6 +1647,8 @@
 	real robs,wsink
         real rtauv(nlvddi,nkn)
 	real wsinkv(0:nlvddi,nkn)
+        real saux(nlvddi,nkn)
+        real cwrite(nlvddi,nkn)
 	integer istot,isact
 ! common
 ! local
@@ -1684,9 +1687,7 @@
 	double precision, allocatable :: cdiag(:,:)
 	double precision, allocatable :: clow(:,:)
 	double precision, allocatable :: chigh(:,:)
-        real, allocatable :: cwrite(:,:)
         real, allocatable :: c2write(:)
-        real, allocatable :: saux(:,:)
 !------------------------------------------------------------
 ! end of big arrays
 !------------------------------------------------------------
@@ -1725,7 +1726,6 @@
 
 	allocate(cn(nlvddi,nkn),co(nlvddi,nkn),cdiag(nlvddi,nkn))
 	allocate(clow(nlvddi,nkn),chigh(nlvddi,nkn))
-	allocate(cwrite(nlvddi,nkn),saux(nlvddi,nkn))
 	allocate(c2write(nkn))
 
 !-----------------------------------------------------------------
@@ -2037,7 +2037,7 @@
                   aux2 = chigh(l,k) / voltot
                   stabadv = max(stabadv,aux2)
 		  saux(l,k) = aux2		!for adv. stab.
-                  aux3 = clow(l,k) / voltot
+                  aux3 = clow(l,k) / voltot 
                   stabdiff = max(stabdiff,aux3)
                   aux4 = cn(l,k) / voltot
                   stabvert = max(stabvert,aux4)
@@ -2086,7 +2086,6 @@
 
 	deallocate(cn,co,cdiag)
 	deallocate(clow,chigh)
-	deallocate(cwrite,saux)
 
 !-----------------------------------------------------------------
 ! end of routine

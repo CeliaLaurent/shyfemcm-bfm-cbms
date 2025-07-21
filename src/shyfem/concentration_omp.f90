@@ -196,6 +196,7 @@
 	ALLOCATE(cdiag(nlvddi,nkn))
 	ALLOCATE(clow(nlvddi,nkn))
 	ALLOCATE(chigh(nlvddi,nkn))
+	cn(:,:)=0.0
 	
 	az = azpar
 	ad = adpar
@@ -791,7 +792,7 @@
 
 	double precision, parameter :: d_tiny = tiny(1.d+0)
 	double precision, parameter :: r_tiny = tiny(1.)
-      
+
 ! ----------------------------------------------------------------
 !  debug code
 ! ----------------------------------------------------------------
@@ -804,6 +805,7 @@
           jlevel = jlhkv(k)
 
 	  do l=jlevel,ilevel
+	    cload = 0.
 
             !mflux = cbound(l,k)		!mass flux has been passed
 	    cconz = cbound(l,k)			!concentration has been passed
@@ -814,23 +816,22 @@
             cn(l,k) = cn(l,k) + dt * mflux	!explicit treatment
 
 	    loading = rload*load(l,k)
-            if( loading == 0 ) then			!no loading
-              !nothing
-            else if ( loading < 0.d0 ) then		!excess deposition
-	      cload = 0.
+            if( abs(loading) .lt. 0.d0 ) then			!no loading
+	      loading=0.d0
+            else if ( loading < -0.d0 ) then		!excess deposition
 	      if( cn(l,k) > 0. ) then
                 cload = - dt * loading
-                cload = cn(l,k) * ( 1. - exp(-cload/cn(l,k)) )
+                cload = cn(l,k) * ( 1. - exp(-cload/max(1e-9,cn(l,k))) )
 	      else if( cn(l,k) < 0. ) then
-	        cn(l,k) = 0.
+	        cn(l,k) = 0.d0
 	      end if
-              if( cload > cn(l,k) ) goto 98
-              loading = -cload / dt
-              if( rload > 0. ) load(l,k) = loading / rload
-              cn(l,k) = cn(l,k) + dt*loading
-            else					!erosion
-              cn(l,k) = cn(l,k) + dt*loading
-            end if
+            if( cload > cn(l,k) ) goto 98
+            loading = -cload / dt
+            if( rload > 0. ) load(l,k) = loading / rload
+            cn(l,k) = cn(l,k) + dt*loading
+        else					!erosion
+          cn(l,k) = cn(l,k) + dt*loading
+        end if
 
 	  end do
 
